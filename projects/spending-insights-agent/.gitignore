@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Env files — never commit secrets
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+data/spending.db
+
+# VS Code
+.vscode/settings.json
