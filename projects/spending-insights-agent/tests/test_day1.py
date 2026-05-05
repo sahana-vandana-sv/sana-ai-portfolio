@@ -7,27 +7,30 @@ import pytest
 import pandas as pd
 from fastapi.testclient import TestClient
 
-# Point tests at a throwaway test DB — never the real one
 os.environ["DB_PATH"] = "data/test.db"
 
 from app.main import app
-from app.db import init_db, insert_transaction, get_transaction_count, get_all_transactions
-
-client = TestClient(app)
+import app.db as db
+from app.db import insert_transaction, get_transaction_count, get_all_transactions
 
 
 @pytest.fixture(autouse=True)
 def fresh_db(tmp_path):
     """Each test gets a clean database."""
-    os.environ["DB_PATH"] = str(tmp_path / "test.db")
-    init_db()
+    test_db = str(tmp_path / "test.db")
+    db.DB_PATH = test_db
+    db.init_db()
     yield
-    # tmp_path is cleaned up automatically by pytest
+    db.DB_PATH = "data/test.db"
+
+
+@pytest.fixture()
+def client():
+    return TestClient(app)
 
 
 class TestDatabase:
     def test_init_creates_table(self):
-        # If init_db ran without error, count should return 0
         assert get_transaction_count() == 0
 
     def test_insert_transaction(self):
@@ -55,9 +58,9 @@ class TestDatabase:
             "account_id": "ACC001",
         }
         insert_transaction(txn)
-        second = insert_transaction(txn)  # same txn_id
-        assert second is False            # not inserted
-        assert get_transaction_count() == 1  # still only 1 row
+        second = insert_transaction(txn)
+        assert second is False
+        assert get_transaction_count() == 1
 
     def test_get_all_returns_dicts(self):
         txn = {
@@ -88,15 +91,15 @@ class TestSeedCSV:
 
 
 class TestHealthEndpoint:
-    def test_health_returns_ok(self):
+    def test_health_returns_ok(self, client):
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json()["status"] == "ok"
 
-    def test_health_shows_transaction_count(self):
+    def test_health_shows_transaction_count(self, client):
         response = client.get("/health")
         assert "transactions_in_db" in response.json()
 
-    def test_root_endpoint(self):
+    def test_root_endpoint(self, client):
         response = client.get("/")
         assert response.status_code == 200

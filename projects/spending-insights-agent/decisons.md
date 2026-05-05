@@ -36,3 +36,39 @@
 - Single `app/db.py` not a `db/` folder: premature structure is its own
   form of complexity. One file handles everything the project needs today.
   Split it when it earns the split.
+
+## Day 2
+
+### What I built
+
+- `app/services/csv_parser.py` — standalone parser that normalises any CSV
+  into clean transaction dicts: strips whitespace, coerces types, handles
+  multiple date formats, drops null rows with a warning
+- `POST /transactions/ingest` — file upload endpoint, returns inserted vs
+  skipped count
+- `GET /transactions/` — list endpoint for debugging DB state
+- 17 passing tests across parser, ingest endpoint, and list endpoint
+
+### What I deferred and why
+
+- Plaid API: timebox decision — CSV path fully validates the ingest
+  pipeline. Plaid adds OAuth complexity with no new learning at this stage.
+- Authentication on endpoints: Day 9 with the rest of security hardening.
+
+### One thing that surprised me technically
+
+- `TestClient(app)` at module level triggers a real request at import time,
+  before any pytest fixture runs. The fix is making `client` a fixture so
+  it's created after `fresh_db` patches `db.DB_PATH`. Rule: nothing that
+  touches the DB should live at module level in a test file.
+
+### Decisions I'd defend in an interview
+
+- `parse_csv_bytes` and `parse_csv_file` as separate functions: the agent
+  on Day 6 will call the parser directly from disk; the API calls it from
+  uploaded bytes. Same normalisation logic, two entry points — no HTTP
+  round-trip needed from the agent.
+- `INSERT OR IGNORE` for deduplication: handled at the DB layer, not
+  application logic. Simpler, atomic, and impossible to bypass.
+- `CSVParseError` as a named exception: lets the API layer catch it
+  specifically and return a clean 422, rather than a generic 500.

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api.health import router as health_router
+from app.api.transactions import router as transactions_router
 
 app = FastAPI(
     title="Spending Insights Agent",
@@ -7,6 +8,7 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(transactions_router)
 
 @app.get("/")
 def root():
