@@ -78,4 +78,37 @@ def get_uncategorised() -> list[dict]:
     conn.close()
     return [dict(row) for row in rows] 
 
+def update_anomaly(txn_id:str, is_anomaly:bool)->None:
+    # Update the is_anomaly flag for a transaction
+    conn = get_connection()
+    conn.execute("""
+        UPDATE transactions
+        SET is_anomaly = ?
+        WHERE txn_id = ?
+    """, (1 if is_anomaly else 0, txn_id))
+    conn.commit()
+    conn.close()
+
+
+def get_transactions_by_category(category:str)->list[dict]:
+    conn = get_connection()
+    rows = conn.execute("""
+        SELECT * FROM transactions
+        WHERE category = ?
+        ORDER BY date DESC
+    """, (category,)).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def get_anomalies()->list[dict]:
+    # Return all transactions flagged as anomalies
+    conn = get_connection()
+    rows = conn.execute("""
+        SELECT * FROM transactions
+        WHERE is_anomaly = 1
+        ORDER BY date DESC
+    """).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
 
