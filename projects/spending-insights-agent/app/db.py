@@ -57,3 +57,25 @@ def get_transaction_count():
     conn.close()
     return count
 
+
+# category 
+
+def update_category(txn_id: str, category: str, confidence: float)-> None:
+    conn = get_connection()
+    conn.execute("""
+        UPDATE transactions
+        SET category = ?
+        WHERE txn_id = ?
+    """, (category, txn_id))
+    conn.commit()
+    conn.close()
+
+def get_uncategorised() -> list[dict]:
+    conn = get_connection()
+    rows = conn.execute(
+        "SELECT * FROM transactions WHERE category IS NULL ORDER BY date DESC"
+    ).fetchall()
+    conn.close()
+    return [dict(row) for row in rows] 
+
+

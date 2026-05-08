@@ -7,6 +7,7 @@ import pytest
 
 # Must be set before any app module is imported
 os.environ["DB_PATH"] = "data/test.db"
+os.environ["CLASSIFY_ON_INGEST"] = "false"
 
 from fastapi.testclient import TestClient
 from app.main import app

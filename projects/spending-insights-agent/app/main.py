@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from app.api.health import router as health_router
 from app.api.transactions import router as transactions_router
+from dotenv import load_dotenv
 
+load_dotenv()
 app = FastAPI(
     title="Spending Insights Agent",
     version="1.0.0",
