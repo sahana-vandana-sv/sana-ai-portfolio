@@ -1,0 +1,45 @@
+{
+  "family": "lifeagent",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/lifeagentTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "lifeagent",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/lifeagent:latest",
+      "portMappings": [
+        { "containerPort": 8000, "protocol": "tcp" }
+      ],
+      "secrets": [
+        { "name": "TELEGRAM_TOKEN",       "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/TELEGRAM_TOKEN" },
+        { "name": "ANTHROPIC_API_KEY",    "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/ANTHROPIC_API_KEY" },
+        { "name": "SUPABASE_URL",         "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/SUPABASE_URL" },
+        { "name": "SUPABASE_SERVICE_KEY", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/SUPABASE_SERVICE_KEY" },
+        { "name": "REDIS_URL",            "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/REDIS_URL" },
+        { "name": "LANGCHAIN_API_KEY",    "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:lifeagent/LANGCHAIN_API_KEY" }
+      ],
+      "environment": [
+        { "name": "LANGCHAIN_TRACING_V2", "value": "true" },
+        { "name": "LANGCHAIN_PROJECT",    "value": "lifeagent" },
+        { "name": "ENVIRONMENT",          "value": "production" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/lifeagent",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3
+      }
+    }
+  ]
+}

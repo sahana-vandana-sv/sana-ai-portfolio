@@ -1,0 +1,22 @@
+[
+  {"input": "Remind me to call GP next Thursday at 10am", "expected_routing": {"calendar": true, "task": true}},
+  {"input": "I spent £18 on lunch with Sarah", "expected_routing": {"note": true}},
+  {"input": "Remember that I prefer morning gym sessions", "expected_routing": {"memory": true}},
+  {"input": "Summarize everything I need to do this week", "expected_routing": {"query": true}},
+  {"input": "Meeting with team tomorrow at 2pm", "expected_routing": {"calendar": true}},
+  {"input": "Buy groceries", "expected_routing": {"task": true}},
+  {"input": "I hate meetings before 9am", "expected_routing": {"memory": true}},
+  {"input": "Pay rent on the 1st", "expected_routing": {"task": true, "calendar": true}},
+  {"input": "Lunch with Sarah tomorrow at noon", "expected_routing": {"calendar": true, "note": true}},
+  {"input": "What events do I have this week?", "expected_routing": {"query": true, "calendar": true}},
+  {"input": "Add dentist appointment Friday 3pm", "expected_routing": {"calendar": true, "task": true}},
+  {"input": "I always wake up at 7am", "expected_routing": {"memory": true}},
+  {"input": "Note: the API key is abc123", "expected_routing": {"note": true}},
+  {"input": "Complete task buy groceries", "expected_routing": {"task": true}},
+  {"input": "What are my preferences?", "expected_routing": {"query": true, "memory": true}},
+  {"input": "Book gym session every Monday at 6am", "expected_routing": {"calendar": true, "memory": true}},
+  {"input": "I spent £50 on a taxi", "expected_routing": {"note": true}},
+  {"input": "Write down that I need to finish the report by Friday", "expected_routing": {"task": true}},
+  {"input": "Call mum on Sunday", "expected_routing": {"task": true, "calendar": true}},
+  {"input": "What did I spend this week?", "expected_routing": {"query": true, "note": true}}
+]
