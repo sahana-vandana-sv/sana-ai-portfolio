@@ -103,10 +103,10 @@ This project is built **one layer at a time**. Each session adds exactly one con
 
 | Session | What you build | Done when |
 |---------|---------------|-----------|
-| **1** | FastAPI skeleton + `/health` + stub webhook + one real Claude call | `pytest tests/test_api.py` → 3 passed |
-| **2** | Security layer — injection detection + PII masking | `pytest tests/test_security.py` → all passed |
-| **3** | Redis short-term memory | `pytest tests/test_memory.py` → all passed |
-| **4** | Supabase schema + task tool | `pytest tests/test_tools.py` → all passed |
+| **1** ✅ | FastAPI skeleton + `/health` + stub webhook + one real Claude call | `pytest tests/test_api.py` → 3 passed |
+| **2** ✅ | Security layer — injection detection + PII masking | `pytest tests/test_security.py` → 27 passed |
+| **3** ✅ | Redis short-term memory | `pytest tests/test_memory.py` → 11 passed |
+| **4** ✅ | Supabase schema + task tool | `pytest tests/test_tools.py` → 13 passed |
 | **5** | Notes tool with pgvector embeddings | semantic search returns ranked results |
 | **6** | Memory/preferences tool | store + retrieve preferences |
 | **7** | Google Calendar tool + OAuth flow | `create_event` + `list_events` work |
